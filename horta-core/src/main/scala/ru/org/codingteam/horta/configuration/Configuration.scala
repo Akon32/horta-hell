@@ -15,7 +15,12 @@ object Configuration {
 		properties
 	}
 
-	lazy val owner = properties.getProperty("owner")
+  lazy val pluginClassNames = {
+    import scala.collection.JavaConversions._
+    properties.stringPropertyNames.toList filter (_ startsWith "plugins.classnames.") map properties.getProperty
+  }
+
+  lazy val owner = properties.getProperty("owner")
 	lazy val login = properties.getProperty("login")
 	lazy val password = properties.getProperty("password")
 	lazy val server = properties.getProperty("server")

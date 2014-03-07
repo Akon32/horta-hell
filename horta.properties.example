@@ -1,3 +1,14 @@
+
+# List of plugins
+# Only the class name is important, 'name' after a 'plugins.classnames.' is a dummy now.
+plugins.classnames.test=ru.org.codingteam.horta.plugins.TestPlugin
+plugins.classnames.fortune=ru.org.codingteam.horta.plugins.FortunePlugin
+plugins.classnames.access=ru.org.codingteam.horta.plugins.AccessPlugin
+plugins.classnames.pet=ru.org.codingteam.horta.plugins.pet.PetPlugin
+plugins.classnames.markov=ru.org.codingteam.horta.plugins.markov.MarkovPlugin
+plugins.classnames.version=ru.org.codingteam.horta.plugins.VersionPlugin
+plugins.classnames.bash=ru.org.codingteam.horta.plugins.bash.BashPlugin
+
 login=login
 password=password
 server=jabber.ru

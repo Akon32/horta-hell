@@ -7,14 +7,11 @@ import ru.org.codingteam.horta.actors.database._
 import ru.org.codingteam.horta.messages._
 import ru.org.codingteam.horta.plugins._
 import ru.org.codingteam.horta.security._
-import scala.concurrent.Lock
 import scala.concurrent.duration._
 import scala.concurrent.{Await, Future}
 import scala.language.postfixOps
 import ru.org.codingteam.horta.protocol.jabber.JabberProtocol
-import ru.org.codingteam.horta.plugins.markov.MarkovPlugin
-import ru.org.codingteam.horta.plugins.pet.PetPlugin
-import ru.org.codingteam.horta.plugins.bash.BashPlugin
+import ru.org.codingteam.horta.configuration.Configuration
 
 class Core extends Actor with ActorLogging {
 
@@ -25,15 +22,23 @@ class Core extends Actor with ActorLogging {
   /**
    * List of plugin props to be started.
    */
-  val plugins: List[Props] = List(
-    Props[TestPlugin],
-    Props[FortunePlugin],
-    Props[AccessPlugin],
-    Props[PetPlugin],
-    Props[MarkovPlugin],
-    Props[VersionPlugin],
-    Props[BashPlugin]
-  )
+  lazy val plugins: List[Props] = Configuration.pluginClassNames flatMap {
+    className =>
+      def error(e: Throwable) = {
+        log.error(e, s"Plugin with classname '$className' not loaded")
+        None
+      }
+      try {
+        val cls = Class.forName(className)
+        log.info(s"Plugin with classname '$className' loaded")
+        Some(Props(cls))
+      } catch {
+        case e: LinkageError => error(e)
+        case e: ClassNotFoundException => error(e)
+        case e: ExceptionInInitializerError => error(e)
+      }
+  }
+
 
   /**
    * List of registered commands.
